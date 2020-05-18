@@ -1,0 +1,39 @@
+# SUA FUNÇÃO É CRIAR UM AMBIENTE
+# NESTE TEREMOS UM SERVIDOR RAILS E O MYSQL
+# EXPLICAÇÃO BOA: https://imasters.com.br/banco-de-dados/docker-compose-o-que-e-para-que-serve-o-que-come
+
+#MYSQL começa sempre antes do servidor rails
+
+version: '3.4'
+services:
+  project_name_mysql:
+    container_name: project_name_mysql
+    image: library/mysql:5.7.27
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+
+  project_name_rails:
+    container_name: project_name_rails
+    image: project_name_rails
+    environment:
+      - DB_HOST=project_name_mysql
+    volumes:
+      - project_name_bundle:/usr/local/bundle
+      - .:/app
+    stdin_open: true
+    tty: true
+    ports:
+      - 3005:3001
+    depends_on:
+      - project_name_mysql
+    command: rails s -p 3001 -b 0.0.0.0
+
+
+volumes:
+  project_name_bundle:
+    name: project_name_bundle
